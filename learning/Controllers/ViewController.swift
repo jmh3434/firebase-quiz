@@ -18,6 +18,7 @@ class ViewController: UIViewController {
     let questionList = QuestionBank()
     
     var handle:DatabaseHandle?
+    let myRef = Database.database().reference(withPath: "users  ")
     
     @IBOutlet var buttons: [UIButton]!
     
@@ -30,52 +31,56 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+       
         
-        
-        
-        
-            
-            
-            
-            
-        
-        
+        getData()
+    }
+    func getData(){
         getNewData { () -> () in
             
             print("temp array",self.tempArray)
-            self.newQuestion.a = self.tempArray[0]
-            self.newQuestion.b = self.tempArray[1]
-            self.newQuestion.c = self.tempArray[2]
-            self.newQuestion.d = self.tempArray[3]
-            self.newQuestion.question = self.tempArray[4]
-            self.newQuestion.answer = self.tempArray[5]
-            
+//            self.newQuestion.a = self.tempArray[0]
+//            self.newQuestion.b = self.tempArray[1]
+//            self.newQuestion.c = self.tempArray[2]
+//            self.newQuestion.d = self.tempArray[3]
+//            self.newQuestion.question = self.tempArray[4]
+//            self.newQuestion.questionNum = self.tempArray[5]
+//            self.newQuestion.answer = self.tempArray[6]
+           
+            if(self.newQuestion.questionNum != ""){
+                print("End of Quiz")
+            }
             self.setLabelsButtons()
+            
         }
-        
-        
-        
-        
     }
     func getNewData(completion: @escaping () -> ()){
         let user = Auth.auth().currentUser?.uid
         let ref = Database.database().reference()
         
-        var questionObject = QuestionObject()
-        
-        self.handle = ref.child("/users/\(user!)").child("0").observe(.childAdded, with: {(snapshot) in
+        //self.handle = ref.child("/users/\(user!)").child("\(index)").observe(.childAdded, with: {(snapshot) in
+        self.handle = ref.child("/users/\(user!)/\(index)").observe(.value, with: { snapshot in
             
+           let questionItem = snapshot.value as? [String: Any]
+            let question = questionItem!["question"]
+            self.newQuestion.a = questionItem!["a"] as! String
+            self.newQuestion.b = questionItem!["b"] as! String
+            self.newQuestion.c = questionItem!["c"] as! String
+            self.newQuestion.d = questionItem!["d"] as! String
+            self.newQuestion.question = questionItem!["question"] as! String
+            self.newQuestion.questionNum = questionItem!["questionNum"] as! String
+            self.newQuestion.answer = questionItem!["theanswer"] as! String
             
-            let questionItem = snapshot.value as! String
+            completion()
             
-            print("qo",questionItem)
-            self.tempArray.append(questionItem as String)
-            if (self.tempArray.count>5){
-                completion()
-                
-            }
-            
-            
+//            if let questionItem = snapshot.value as? String {
+//
+//                self.tempArray.append(questionItem as String)
+//
+//                if (self.tempArray.count>6){
+//                    completion()
+//                }
+//            }
         })
        
         
@@ -99,16 +104,7 @@ class ViewController: UIViewController {
         
     }
     
-    func generateQuestion(){
-        newQuestion.question = questionList.questions[index].question
-        newQuestion.a = questionList.questions[index].a
-        newQuestion.b = questionList.questions[index].b
-        newQuestion.c = questionList.questions[index].c
-        newQuestion.d = questionList.questions[index].d
-        newQuestion.answer = questionList.questions[index].answer
-        index += 1
-        
-    }
+   
     
     @IBAction func buttonPressed(_ sender: UIButton) {
         let rightAnswerCurrently = newQuestion.answer
@@ -120,21 +116,18 @@ class ViewController: UIViewController {
         case 4: if rightAnswerCurrently == "d" {button4.backgroundColor = UIColor.green}else {button4.backgroundColor = UIColor.red};button4.setTitleColor(UIColor.white, for: .normal)
             
         default:
-            print("carap")
+            print("error")
         }
     }
         
     @IBAction func next(_ sender: UIButton) {
+       
         for button in buttons { button.backgroundColor = UIColor.clear}
         for button in buttons { button.setTitleColor(UIColor.red, for: .normal)}
-        if index < questionList.questions.count {
-            generateQuestion()
-            setLabelsButtons()
-        }else{
-            index = 0
-            generateQuestion()
-            setLabelsButtons()
-        }
+        self.index+=1
+        
+        tempArray.removeAll()
+        getData()
         
         
     }

@@ -25,11 +25,11 @@ class CreateQuizViewController: UIViewController,UITextFieldDelegate {
     var questionBank = QuestionBank()
     var questionIndex = 0
     
+    let firebaseRef = Database.database().reference()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-
-        
+     
     }
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
@@ -50,11 +50,21 @@ class CreateQuizViewController: UIViewController,UITextFieldDelegate {
         }
         
     }
+    @IBAction func finish(_ sender: UIButton) {
+        questionObject.questionNum = "\(questionIndex)"
+        updateChildValues()
+    }
+    
+    
     @IBAction func nextQuestionPressed(_ sender: UIButton) {
         
-       
-       
-                                    
+    
+        updateChildValues()
+      
+    }
+    
+    
+    func updateChildValues() {
         questionObject.question = questionText.text!
         questionObject.a = answerA.text!
         questionObject.b = answerB.text!
@@ -63,27 +73,15 @@ class CreateQuizViewController: UIViewController,UITextFieldDelegate {
         
         questionBank.questions.append(questionObject)
         
-        print("question bank: ",questionBank)
-        
         let user = Auth.auth().currentUser?.uid
         
+        let variable = questionObject.nsDictionary as NSDictionary
         
-        let firebaseRef = Database.database().reference()
-        
-        //Tell Firebase the structure
-         let variable = questionObject.nsDictionary as NSDictionary
-        
-        print("variable ",variable)
-        
-        
-        //Tell Firebase where to save and save the Value
         firebaseRef.updateChildValues(["users/\(user!)/\(questionIndex)/":variable])
         
         questionIndex+=1
-
+        
     }
-    
-    
 
    
 }
