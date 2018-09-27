@@ -24,6 +24,7 @@ class CreateQuizViewController: UIViewController,UITextFieldDelegate {
     var questionObject = QuestionObject()
     var questionBank = QuestionBank()
     var questionIndex = 0
+    var quizName = String()
     
     let firebaseRef = Database.database().reference()
     
@@ -77,13 +78,17 @@ class CreateQuizViewController: UIViewController,UITextFieldDelegate {
         
         let variable = questionObject.nsDictionary as NSDictionary
         
-        firebaseRef.updateChildValues(["users/\(user!)/\(questionIndex)/":variable])
+        firebaseRef.updateChildValues(["users/\(user!)/\(quizName)/\(questionIndex)/":variable])
+        print("quizname",quizName)
         
         questionIndex+=1
         
     }
 
-   
+    @IBAction func signout(_ sender: UIButton) {
+        performSegue(withIdentifier: "signout", sender: nil)
+    }
+    
 }
 
 

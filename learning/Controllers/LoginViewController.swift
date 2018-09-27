@@ -62,7 +62,7 @@ class LoginViewController: UIViewController {
                 
                 self.present(alert, animated: true, completion: nil)
             }else {
-
+                    self.performSegue(withIdentifier: "login", sender: nil)
             }
         }
     }
