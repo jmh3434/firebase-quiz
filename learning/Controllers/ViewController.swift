@@ -14,11 +14,13 @@ import Firebase
 class ViewController: UIViewController {
     
     var handle:DatabaseHandle?
-    let myRef = Database.database().reference(withPath: "users  ")
+    let myRef = Database.database().reference(withPath: "users")
    
     var index = 0
     var newQuestion = QuestionObject()
     let questionList = QuestionBank()
+    var quizName = ""
+    var quizUser = ""
     
     
     
@@ -48,7 +50,8 @@ class ViewController: UIViewController {
         let ref = Database.database().reference()
         
         
-        self.handle = ref.child("/users/\(user!)/james/\(index)").observe(.value, with: { snapshot in
+        
+        self.handle = ref.child("/users/\(quizUser)/\(quizName)/\(index)").observe(.value, with: { snapshot in
             
             if let questionItem = snapshot.value as? [String: Any] {
                 self.newQuestion.a = questionItem["a"] as! String

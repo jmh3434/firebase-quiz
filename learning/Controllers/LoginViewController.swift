@@ -31,7 +31,10 @@ class LoginViewController: UIViewController {
     // MARK: UIViewController Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-       
+//        do {
+//            try  Auth.auth().signOut()}
+//        catch {
+//            print("error")}
         Auth.auth().addStateDidChangeListener() { auth, user in
             if user != nil {
                 self.performSegue(withIdentifier: "login", sender: nil)

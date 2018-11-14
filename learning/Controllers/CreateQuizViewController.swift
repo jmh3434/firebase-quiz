@@ -54,7 +54,9 @@ class CreateQuizViewController: UIViewController,UITextFieldDelegate {
     @IBAction func finish(_ sender: UIButton) {
         questionObject.questionNum = "\(questionIndex)"
         updateChildValues()
+        performSegue(withIdentifier: "finish", sender: nil)
     }
+    
     
     
     @IBAction func nextQuestionPressed(_ sender: UIButton) {
@@ -66,6 +68,7 @@ class CreateQuizViewController: UIViewController,UITextFieldDelegate {
     
     
     func updateChildValues() {
+        
         questionObject.question = questionText.text!
         questionObject.a = answerA.text!
         questionObject.b = answerB.text!
