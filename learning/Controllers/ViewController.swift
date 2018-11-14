@@ -51,7 +51,7 @@ class ViewController: UIViewController {
         
         
         
-        self.handle = ref.child("/users/\(quizUser)/\(quizName)/\(index)").observe(.value, with: { snapshot in
+        self.handle = ref.child("/users/\(quizUser)/sports/\(quizName)/\(index)").observe(.value, with: { snapshot in
             
             if let questionItem = snapshot.value as? [String: Any] {
                 self.newQuestion.a = questionItem["a"] as! String

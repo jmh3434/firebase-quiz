@@ -25,12 +25,13 @@ class CreateQuizViewController: UIViewController,UITextFieldDelegate {
     var questionBank = QuestionBank()
     var questionIndex = 0
     var quizName = String()
+    var topic = String()
     
     let firebaseRef = Database.database().reference()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-     
+     topic = "UNC"
     }
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
@@ -81,7 +82,7 @@ class CreateQuizViewController: UIViewController,UITextFieldDelegate {
         
         let variable = questionObject.nsDictionary as NSDictionary
         
-        firebaseRef.updateChildValues(["users/\(user!)/\(quizName)/\(questionIndex)/":variable])
+        firebaseRef.updateChildValues(["users/\(user!)/\(topic)/\(quizName)/\(questionIndex)/":variable])
         print("quizname",quizName)
         
         questionIndex+=1

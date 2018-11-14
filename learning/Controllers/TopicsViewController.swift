@@ -66,7 +66,7 @@ class TopicsViewController: UIViewController,UITableViewDelegate,UITableViewData
         // myList.removeAll()
         
         let ref = Database.database().reference()
-        ref.child("/users/\(user!)").observe(.value, with: {(snapshot) in
+        ref.child("/users/\(user!)/sports").observe(.value, with: {(snapshot) in
             
             
             

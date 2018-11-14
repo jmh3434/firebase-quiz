@@ -21,19 +21,61 @@ class BrowseViewController: UIViewController, UITableViewDelegate,UITableViewDat
     
     var quizName = ""
     var myList:[String]=[]
+    var myQuizzes:[String:String] = [:]
+    var myTopics:[String]=[]
+    var myindex = 0
     
     override func viewDidLoad() {
         
         super.viewDidLoad()
         
         
+        getTopics { () -> () in
+            
+            self.loadQuiz()
+            
 
+            
+        }
+        
+    }
+    func getTopics(completion: @escaping () -> ()){
+        let user = Auth.auth().currentUser?.uid
+        
+        
+        let ref = Database.database().reference()
+        
+        
+        ref.child("/users/cTenMLxdEucFAvdhTIxAgqWbchn1/").observe(.value, with: {(snapshot) in
+            
+            
+            
+            let value = snapshot.value as? NSDictionary
+            
+            
+            var topics = value!.allKeys
+            
+            
+            for i in (0..<topics.count){
+                
+                self.myTopics.append(topics[i] as! String)
+                
+                
+            }
+            completion()
+            
+        })
+
+        
+    }
+    func loadQuiz () {
         
         getNewData { () -> () in
             
-            self.tableView.reloadData()
-           
             
+            self.tableView.reloadData()
+            
+            print("my quizzzes",self.myQuizzes)
             
         }
     }
@@ -47,6 +89,7 @@ class BrowseViewController: UIViewController, UITableViewDelegate,UITableViewDat
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! BrowseCell
         //cell.messageView.text = myList[indexPath.row]
+        
         cell.collectionView.reloadData()
         return cell
     }
@@ -56,11 +99,15 @@ class BrowseViewController: UIViewController, UITableViewDelegate,UITableViewDat
         return 9
     }
     
+    
     func getNewData(completion: @escaping () -> ()){
         let user = Auth.auth().currentUser?.uid
 
+
         let ref = Database.database().reference()
-        ref.child("/users/cTenMLxdEucFAvdhTIxAgqWbchn1").observe(.value, with: {(snapshot) in
+        
+        
+        ref.child("/users/cTenMLxdEucFAvdhTIxAgqWbchn1/\(myTopics[0])").observe(.value, with: {(snapshot) in
             
             
             
@@ -73,19 +120,24 @@ class BrowseViewController: UIViewController, UITableViewDelegate,UITableViewDat
             for i in (0..<nameOfQuizes.count){
                 
                 self.myList.append(nameOfQuizes[i] as! String)
+                //self.myQuizzes[self.myTopics[self.myindex]] = nameOfQuizes[i] as! String
+                
+                
+                
                 print(nameOfQuizes[i])
                 
                 
             }
             completion()
+            self.myindex = self.myindex + 1
             
         })
+        
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let currentCell = tableView.cellForRow(at: indexPath)! as! BrowseCell
         
-//        quizName = currentCell.messageView.text!
         
         
         
@@ -137,13 +189,13 @@ extension BrowseViewController:  UICollectionViewDelegate,UICollectionViewDataSo
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return myList.count
-       // return 4
         
     }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! InsideCollectionViewCell
+        
+      //  cell.label.text = myList[indexPath.row]
         cell.label.text = myList[indexPath.row]
-       // print(cell.label.text)
         return cell
         
     }
