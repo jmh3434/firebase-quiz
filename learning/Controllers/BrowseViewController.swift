@@ -9,13 +9,14 @@
 import UIKit
 import Firebase
 
-class BrowseViewController: UIViewController, UICollectionViewDelegate,UICollectionViewDataSource {
+class BrowseViewController: UIViewController, UITableViewDelegate,UITableViewDataSource {
     
     
     
     
+    @IBOutlet weak var tableView: UITableView!
     
-    @IBOutlet weak var collectionView: UICollectionView!
+    
     
     
     var quizName = ""
@@ -26,33 +27,34 @@ class BrowseViewController: UIViewController, UICollectionViewDelegate,UICollect
         super.viewDidLoad()
         
         
-        
-        //        self.tableView.register(CustomCell.self, forCellReuseIdentifier: "newCell")
-        //        self.tableView.rowHeight = UITableViewAutomaticDimension
-        //        self.tableView.estimatedRowHeight = 200
+
         
         getNewData { () -> () in
             
-            self.collectionView.reloadData()
+            self.tableView.reloadData()
+           
+            
+            
         }
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
     }
     
     
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! BrowseCell
-//        //cell.messageView.text = myList[indexPath.row]
-//        return cell
-//    }
-//
-//
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return 1
-//    }
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! BrowseCell
+        //cell.messageView.text = myList[indexPath.row]
+        cell.collectionView.reloadData()
+        return cell
+    }
+
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 9
+    }
     
     func getNewData(completion: @escaping () -> ()){
         let user = Auth.auth().currentUser?.uid
@@ -77,11 +79,9 @@ class BrowseViewController: UIViewController, UICollectionViewDelegate,UICollect
             }
             completion()
             
-            
-            
         })
     }
-    /*
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let currentCell = tableView.cellForRow(at: indexPath)! as! BrowseCell
         
@@ -94,20 +94,8 @@ class BrowseViewController: UIViewController, UICollectionViewDelegate,UICollect
                      sender: self)
         
     }
- */
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
-        let currentCell = collectionView.cellForItem(at: indexPath)! as! InsideCollectionViewCell
-        
-          quizName = currentCell.label.text!
-        
-        
-        
-        
-        performSegue(withIdentifier: "startone",
-                     sender: self)
-        
-    }
+ 
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "startone"  {
@@ -126,18 +114,39 @@ class BrowseViewController: UIViewController, UICollectionViewDelegate,UICollect
         
     }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return myList.count
-     
-    }
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "inside", for: indexPath) as! InsideCollectionViewCell
-        cell.label.text = myList[indexPath.row]
-        print(cell.label.text)
-        return cell
-        
-    }
+    
     
     
     
 }
+
+extension BrowseViewController:  UICollectionViewDelegate,UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        let currentCell = collectionView.cellForItem(at: indexPath)! as! InsideCollectionViewCell
+        
+        quizName = currentCell.label.text!
+        
+        
+        
+        
+        performSegue(withIdentifier: "startone",
+                     sender: self)
+        
+    }
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return myList.count
+       // return 4
+        
+    }
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! InsideCollectionViewCell
+        cell.label.text = myList[indexPath.row]
+       // print(cell.label.text)
+        return cell
+        
+    }
+}
+
+

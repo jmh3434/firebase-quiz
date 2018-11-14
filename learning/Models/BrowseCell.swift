@@ -13,6 +13,7 @@
     
     
  
+    @IBOutlet weak var collectionView: UICollectionView!
     
     
     override func awakeFromNib() {
@@ -25,6 +26,8 @@
         
         // Configure the view for the selected state
     }
+    
+    
     
     
     
